@@ -9,6 +9,7 @@ import {
   useSignAndExecuteTransaction,
 } from "@mysten/dapp-kit";
 import { toast } from "sonner";
+import { Eye, Lock } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,15 +22,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 import { CustomField } from "@/components/ui/form-field";
 
 import { PACKAGE_ID, REGISTRY_ID } from "@/lib/sui";
 
 const schema = z.object({
-  title: z.string().nonempty("Title is required"),
+  title: z.string().nonempty("Log Title is required"),
   severity: z.string().nonempty("Severity is required"),
-  moduleName: z.string().nonempty("Module / System is required"),
-  narrative: z.string().nonempty("Narrative is required"),
+  moduleName: z.string().nonempty("Module / Department is required"),
+  narrative: z.string().nonempty("Raw Log is required"),
   notes: z.string().optional(),
 });
 type FormValues = z.infer<typeof schema>;
@@ -143,64 +151,107 @@ export default function UploadLogForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <CustomField
-          control={form.control}
-          name="title"
-          label="Log Title"
-          primary
-          render={({ field }) => (
-            <Input {...field} placeholder="e.g. Audit Banking" />
-          )}
-        />
-        <CustomField
-          control={form.control}
-          name="severity"
-          label="Severity"
-          primary
-          render={({ field }) => (
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select severity" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="LOW">LOW</SelectItem>
-                <SelectItem value="MEDIUM">MEDIUM</SelectItem>
-                <SelectItem value="HIGH">HIGH</SelectItem>
-              </SelectContent>
-            </Select>
-          )}
-        />
-        <CustomField
-          control={form.control}
-          name="moduleName"
-          label="Module / System"
-          primary
-          render={({ field }) => (
-            <Input {...field} placeholder="e.g. Authentication Service" />
-          )}
-        />
-        <CustomField
-          control={form.control}
-          name="narrative"
-          label="Raw log / incident narrative"
-          primary
-          render={({ field }) => (
-            <Textarea
-              {...field}
-              placeholder="Paste log content or write the narrative…"
+        <Card className="border-border/50 bg-card/50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Eye className="w-5 h-5 text-primary" />
+              Log Metadata
+            </CardTitle>
+            <CardDescription>
+              This information will be indexed and searchable without revealing
+              the sensitive content.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+              <CustomField
+                control={form.control}
+                name="title"
+                label="Log Title"
+                primary
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    placeholder="e.g., Security Incident - Q3 2024"
+                  />
+                )}
+              />
+              <CustomField
+                control={form.control}
+                name="severity"
+                label="Severity"
+                primary
+                render={({ field }) => (
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select severity" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="LOW">LOW</SelectItem>
+                      <SelectItem value="MEDIUM">MEDIUM</SelectItem>
+                      <SelectItem value="HIGH">HIGH</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              <CustomField
+                control={form.control}
+                name="moduleName"
+                label="Module / Department"
+                primary
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    placeholder="e.g., Security, Compliance, Operations"
+                  />
+                )}
+              />
+              <CustomField
+                control={form.control}
+                name="notes"
+                label="Additional Notes"
+                render={({ field }) => (
+                  <Textarea {...field} placeholder="Any additional notes…" />
+                )}
+              />
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="border-border/50 bg-card/50">
+          <CardHeader>
+            <CardTitle className="flex flex-wrap items-center gap-2">
+              <Lock className="w-5 h-5 text-primary" />
+              Log Content{" "}
+              <span className="text-xs px-2 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                Sensitive Data
+              </span>
+            </CardTitle>
+            <CardDescription>
+              This content will be encrypted before storage. Only approved
+              parties can decrypt and view.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <CustomField
+              control={form.control}
+              name="narrative"
+              label="Raw Log / Incident Description"
+              primary
+              render={({ field }) => (
+                <Textarea
+                  {...field}
+                  placeholder="Paste log content or Describe the incident, findings, or details here. This will be encrypted and stored securely."
+                />
+              )}
             />
-          )}
-        />
-        <CustomField
-          control={form.control}
-          name="notes"
-          label="Additional Notes"
-          render={({ field }) => (
-            <Textarea {...field} placeholder="Any additional notes…" />
-          )}
-        />
+          </CardContent>
+        </Card>
+
         <Button type="submit" disabled={isLoading}>
-          Upload Log
+          {isLoading ? "Registering Log..." : "Register & Encrypt Log"}
         </Button>
       </form>
     </Form>
