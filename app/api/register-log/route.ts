@@ -1,18 +1,11 @@
 import { NextResponse } from "next/server";
 import { WalrusClient } from "@mysten/walrus";
 import { Ed25519Keypair } from "@mysten/sui/keypairs/ed25519";
-import { fromB64 } from "@mysten/bcs";
+import { fromBase64 } from "@mysten/bcs";
 
 import { sealClient, deriveSealIdentityBytes, threshold } from "@/lib/seal";
-import { suiClient, PACKAGE_ID } from "@/lib/sui";
-
-const walrusClient = new WalrusClient({
-  network: "testnet",
-  suiClient,
-  storageNodeClientOptions: {
-    timeout: 120000, // 120 seconds
-  },
-});
+import { PACKAGE_ID } from "@/lib/sui";
+import { walrusClient } from "@/lib/walrus";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -113,7 +106,7 @@ export async function POST(req: Request) {
         { status: 500 }
       );
     }
-    const keypair = Ed25519Keypair.fromSecretKey(fromB64(secretKey));
+    const keypair = Ed25519Keypair.fromSecretKey(fromBase64(secretKey));
     const walrusRes = await uploadWithRetry(walrusClient, encryptedBytes, {
       epochs: 1,
       deletable: true,
@@ -130,7 +123,7 @@ export async function POST(req: Request) {
       seal: {
         idHex: identityHex,
         threshold: threshold(),
-        serverObjectIds: (process.env.SEAL_SERVER_IDS || "")
+        serverObjectIds: (process.env.NEXT_PUBLIC_SEAL_SERVER_IDS || "")
           .split(",")
           .map((s) => s.trim())
           .filter(Boolean),
