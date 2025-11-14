@@ -5,4 +5,4 @@ export interface IRoleStore {
   setRole: (role: TRole | null) => void;
 }
 
-export type TRole = "SUPER_ADMIN" | "ADMIN" | "USER";
+export type TRole = "SUPER_ADMIN" | "ADMIN" | "AUDITOR";
