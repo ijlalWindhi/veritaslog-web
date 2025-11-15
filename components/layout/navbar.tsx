@@ -32,7 +32,7 @@ function Navbar() {
           <div>
             <p className="text-xs text-muted-foreground">Role</p>
             <p className="text-sm font-semibold text-primary">
-              {role?.replace("_", " ") || "Auditor"}
+              {role?.replace("_", " ") || "AUDITOR"}
             </p>
           </div>
           <ConnectWalletButton />
