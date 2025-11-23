@@ -9,7 +9,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
+} from "@/components/ui/form";
 
 type CustomFieldProps = {
   control: Control<z.infer<any>> | undefined;
