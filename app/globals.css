@@ -156,3 +156,8 @@
 .severity-badge-high {
   @apply bg-red-500/10 text-red-300 border-red-500/30;
 }
+
+::view-transition-old(root), ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+}
