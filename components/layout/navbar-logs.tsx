@@ -2,10 +2,13 @@
 
 import { useState } from "react";
 import { Shield, Menu, X } from "lucide-react";
+import Image from "next/image";
 
 import ConnectWalletButton from "./connect-wallet";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { useUserStore } from "@/stores/use-user";
+
+import Logo from "@/public/images/logo.png";
 
 function Navbar() {
   const { role } = useUserStore();
@@ -23,11 +26,13 @@ function Navbar() {
       >
         {/* Left: Logo + Title */}
         <div className="flex items-center gap-3">
-          <div className="rounded-lg border border-primary/30 bg-primary/10 p-2">
-            <Shield className="h-6 w-6 text-primary" />
-          </div>
+          <Image
+            src={Logo}
+            alt="VeritasLog Logo"
+            className="h-10 w-10 rounded-md"
+          />
           <div className="min-w-0">
-            <h1 className="truncate text-base font-bold text-foreground sm:text-lg">
+            <h1 className="font-bold bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent text-base sm:text-lg">
               VeritasLog
             </h1>
             <p className="text-xs text-muted-foreground">
