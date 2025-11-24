@@ -12,15 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import {
-  CheckCircle2,
-  XCircle,
-  Clock,
-  User,
-  FileText,
-  Calendar,
-} from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+import { CheckCircle2, XCircle, Clock, User, FileText } from "lucide-react";
 import {
   useCurrentAccount,
   useSignAndExecuteTransaction,
@@ -269,12 +261,6 @@ export default function AccessRequestsPage() {
                       )}
                     </div>
                     <CardDescription className="flex items-center gap-4 text-sm">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
-                        {formatDistanceToNow(new Date(request.requestedAt), {
-                          addSuffix: true,
-                        })}
-                      </span>
                       <span className="flex items-center gap-1">
                         <User className="h-3 w-3" />
                         {request.requester}
