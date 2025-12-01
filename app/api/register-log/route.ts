@@ -9,6 +9,7 @@ import { walrusClient } from "@/lib/walrus";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
+export const preferredRegion = "sin1";
 
 async function uploadWithRetry(
   walrusClient: WalrusClient,
@@ -19,7 +20,7 @@ async function uploadWithRetry(
     signer: Ed25519Keypair;
     attributes: Record<string, string>;
   },
-  maxRetries = 3
+  maxRetries = 6
 ) {
   for (let i = 0; i < maxRetries; i++) {
     try {
@@ -45,6 +46,10 @@ export async function POST(req: Request) {
     const form = await req.formData();
     const text = (form.get("text") as string | null) ?? null;
     const metaRaw = (form.get("meta") as string | null) ?? null;
+    console.log("[DEBUG] Request origin:", {
+      forwardedFor: req.headers.get("x-forwarded-for"),
+      realIp: req.headers.get("x-real-ip"),
+    });
     if (!text || !metaRaw) {
       return NextResponse.json(
         { error: "NO_INPUT", message: "text and meta are required" },
@@ -107,8 +112,14 @@ export async function POST(req: Request) {
       );
     }
     const keypair = Ed25519Keypair.fromSecretKey(fromBase64(secretKey));
+    console.log("[DEBUG] Blob details:", {
+      size: encryptedBytes.length,
+      type: typeof encryptedBytes,
+      isUint8Array: encryptedBytes instanceof Uint8Array,
+      firstBytes: Array.from(encryptedBytes.slice(0, 10)),
+    }); 
     const walrusRes = await uploadWithRetry(walrusClient, encryptedBytes, {
-      epochs: 1,
+      epochs: 3,
       deletable: true,
       signer: keypair,
       attributes: { seal_id_hex: identityHex },
