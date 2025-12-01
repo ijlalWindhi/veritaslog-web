@@ -4,7 +4,7 @@ import { Ed25519Keypair } from "@mysten/sui/keypairs/ed25519";
 import { fromBase64 } from "@mysten/bcs";
 
 import { sealClient, deriveSealIdentityBytes, threshold } from "@/lib/seal";
-import { PACKAGE_ID } from "@/lib/sui";
+import { MODULE, PACKAGE_ID, REGISTRY_ID, RPC } from "@/lib/sui";
 import { walrusClient } from "@/lib/walrus";
 
 export const runtime = "nodejs";
@@ -110,6 +110,11 @@ export async function POST(req: Request) {
         { status: 500 }
       );
     }
+    console.log("[DEBUG] WALRUS_SPONSOR_SECRET_KEY:", secretKey);
+    console.log("[DEBUG] RPC:", RPC);
+    console.log("[DEBUG] PACKAGE_ID:", PACKAGE_ID);
+    console.log("[DEBUG] REGISTRY_ID:", REGISTRY_ID);
+    console.log("[DEBUG] MODULE:", MODULE);
     const keypair = Ed25519Keypair.fromSecretKey(fromBase64(secretKey));
     console.log("[DEBUG] Blob details:", {
       size: encryptedBytes.length,
@@ -127,6 +132,7 @@ export async function POST(req: Request) {
     // Debug: log response structure
     console.log("[walrus/upload] walrusRes:", walrusRes);
 
+    console.log("[DEBUG] NEXT_PUBLIC_SEAL_SERVER_IDS:", process.env.NEXT_PUBLIC_SEAL_SERVER_IDS);
     return NextResponse.json({
       blobId: walrusRes?.blobId,
       commitmentHex: identityHex,
