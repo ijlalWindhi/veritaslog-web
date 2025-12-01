@@ -8,7 +8,7 @@ import { MODULE, PACKAGE_ID, REGISTRY_ID, RPC } from "@/lib/sui";
 import { walrusClient } from "@/lib/walrus";
 
 export const runtime = "nodejs";
-export const maxDuration = 60;
+export const maxDuration = 600;
 
 async function uploadWithRetry(
   walrusClient: WalrusClient,
