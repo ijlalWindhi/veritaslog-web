@@ -9,7 +9,6 @@ import { walrusClient } from "@/lib/walrus";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
-export const preferredRegion = "sin1";
 
 async function uploadWithRetry(
   walrusClient: WalrusClient,
